@@ -4,36 +4,54 @@ import Card from "./Card";
 import Styled from "styled-components";
 
 const StyledDiv = Styled.div`
-margin:20px;
-height:5vw;
+margin:auto;
+width:screen.width;
+padding:5px;
+text-align: center;
+border:5px solid black;
+@media screen and (max-width: 400px) {
+  width:auto;
+ }
 `;
 const Button = Styled.button`
-padding: 1.5em 3.1em;
-	border: none;
+margin:7px;
+border: none;
 	border-radius: 7px;
 	color: #fff;
 	background-color: #ff3f40;
 	box-shadow: 2px 2px 25px -7px #4c4c4c;
     cursor: pointer;
+    text-align:center;
+    height: 40px;
+    width: 80px;
 `;
 
 const Input = Styled.input`
+padding:5px;
 height:50px;
+@media screen and (max-width: 400px) {
+  width:auto;
+ }
 `;
+
+const Div =Styled.div`
+padding-bottom:5px;
+`
 const ProductList = () => {
   var flag=false;
   const [product, getProduct] = useState("");
-  const [searchedP, setSearchedP] = useState(products);
+  const [searchedP, setSearchedP] = useState([]);
   useEffect(() => {
-    console.log('useEffect has been called!');
-    if(searchedP.length==0)
-    {
-      flag=true;
-    }
-    console.log(searchedP);
+    setSearchedP(products)
+    // console.log('useEffect has been called!');
+    // if(searchedP.length==0)
+    // {
+    //   flag=true;
+    // }
+    // console.log(searchedP);
     
   
-},[searchedP]);
+},[]);
 
   const showProduct = () => {
     setSearchedP(
@@ -45,19 +63,22 @@ const ProductList = () => {
   };
 
   return (
-    <div>
+    
       <StyledDiv>
+        <Div>
         <Input
           placeholder={"Search Product"}
           value={product}
           onChange={(e) => getProduct(e.target.value)}
         />
-        <Button onClick={showProduct}>search</Button>
+        <Button  onClick={showProduct}>search</Button>
+        </Div>
+        {flag? <h2>Product not Found</h2>:<Card   data={searchedP}></Card>}
       </StyledDiv>
-      <hr />
-{flag? <h2>Product not Found</h2>:<Card data={searchedP}></Card>}
       
-    </div>
+
+      
+    
   );
 };
 
