@@ -1,8 +1,21 @@
 import React, { Component } from "react";
 import Styled from "styled-components";
+import Data from "./Data";
 const StyledDiv= Styled.div`
 margin:50px;
 `
+const Button = Styled.button`
+margin:7px;
+border: none;
+	border-radius: 7px;
+	color: #fff;
+	background-color:  #7395AE;
+	box-shadow: 2px 2px 25px -7px #4c4c4c;
+    cursor: pointer;
+    text-align:center;
+    height: 40px;
+    width: 80px;
+`;
 class Counter extends Component {
 
 
@@ -34,18 +47,25 @@ class Counter extends Component {
   render() {
    
     return (
-      <React.Fragment>
-        <StyledDiv>
-    {/* <h4>{this.props.product.productId}</h4>
-    <h4>{this.props.product.name}</h4> */}
-            {/* {this.renderTags()} */}
-            <button onClick={()=>this.props.onDecrement(this.props.product.productId)}>-</button>
-          <span>{this.props.product.quantity}</span>
-          {/* add product id while incrementing */}
-          <button onClick={ ()=>this.props.onIncrement(this.props.product.productId)}>+</button>
-          <button onClick={()=>this.props.onDelete(this.props.product.productId)}>Delete</button>
-        </StyledDiv>
-      </React.Fragment>
+      <Data.Consumer>
+        {
+          (context)=>(
+            <React.Fragment>
+            <StyledDiv>
+        {/* <h4>{this.props.product.productId}</h4>
+        <h4>{this.props.product.name}</h4> */}
+                {/* {this.renderTags()} */}
+                <Button onClick={()=>this.props.onDecrement(this.props.product.productId)}>-</Button>
+              <span>{this.props.product.quantity}</span>
+              {/* add product id while incrementing */}
+              <Button onClick={ ()=>this.props.onIncrement(this.props.product.productId,context)}>+</Button>
+              <Button onClick={()=>this.props.onDelete(this.props.product.productId)}>Delete</Button>
+            </StyledDiv>
+          </React.Fragment>
+          )
+        }
+      </Data.Consumer>
+     
     );
   }
 }

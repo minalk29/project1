@@ -1,199 +1,384 @@
 import React, { Component } from "react";
 import Counter from "./Counter";
-import { ProductConsumer } from "./userContext";
+import Styled from "styled-components";
 import Products from "../ProductData";
+import Data from "./Data";
+import {withRouter} from 'react-router-dom';
+const StyledDiv =Styled.div`
+width:90vw;
+margin:auto;
+border: 1px solid black;
+padding:10px;
+`
+const StyledImg = Styled.img`
+width:10vw;
+height:10vw;
+@media screen and (max-width: 600px) {
+    width:auto;
+   }
+`
+
+const Div =Styled.div`
+width:100%;
+overflow-x:auto;
+
+margin:auto;
+@media screen and (max-width: 600px) {
+  width:auto;
+ }
+`
+
+
+const Button = Styled.button`
+margin: 20px 40vw;
+padding: 1.5em 3.1em;
+	border: none;
+	border-radius: 7px;
+	color: #fff;
+	background-color:  #7395AE;
+	box-shadow: 2px 2px 25px -7px #4c4c4c;
+    cursor: pointer;
+    font-weight:bold;
+    font-size:20px;
+`;
+const StyledTable1= Styled.table`
+border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #557A95;
+td{
+    border: 1px solid #557A95;
+    padding: 8px;
+    text-align: center;
+    color:#557A95;
+    font-weight:bold;
+    font-size:20px;
+}
+
+
+
+th{
+    padding: 12px;
+  text-align: center;
+  background-color: #557A95;
+  color: white;
+}
+`
+const StyledTable2= Styled.table`
+td{
+    border: 1px solid #557A95;
+    padding: 8px;
+    width:20vw;
+    color:#557A95;
+    text-align: center;
+    font-weight:bold;
+    font-size:20px;
+}
+margin:auto;
+
+`
+const ButtonDisabled =Styled.button`
+margin: 20px 40vw;
+padding: 1.5em 3.1em;
+color: #fff;
+	background-color:  #7395AE;
+	border: none;
+	border-radius: 7px;
+	box-shadow: 2px 2px 25px -7px #4c4c4c;
+    cursor: not-allowed;
+    font-weight:bold;
+    font-size:20px;
+`
+
 class ViewCart extends Component {
-  constructor(props) {
-    super(props);
-    if (this.fetchUsers()) {
-      this.state = {
-        Cart: this.fetchUsers(),
-      };
-    } else {
-      this.state = {
-        Cart: [],
-      };
-    }
-    this.total = 0;
-    this.state.Cart.map((p) => {
-      this.total = this.total + p.price * p.quantity;
-    });
-    this.tax = (this.total * 5) / 100;
-    this.grandTotal = this.total + this.tax;
-    console.log("constructor", this.total);
+  constructor(props,context) {
+    super(props,context);
+    // let totalPrice=0;
+    // this.context.Cart.map((product) => {
+    //   totalPrice= totalPrice + (product.price * product.quantity)
+    //               })
+    //               this.context.setTotal(totalPrice)
+    //               this.context.setTax ((totalPrice * 5) / 100) 
+    //                this.context.setGrandtotal( totalPrice + this.context.Tax)
+                 // console.log(this.state.totalPrice)  
 
-    let cart = this.fetchUsers();
-    console.log("this.fetchUsers() : ", cart);
+
+    // this.total = 0;
+    // this.context.Cart.map((p) => {
+    //   this.total = this.total + p.price * p.quantity;
+    // });
+    // this.tax = (this.total * 5) / 100;
+    // this.grandTotal = this.total + this.tax;
+   //console.log("constructor",this.context.Cart);
+ //  this.updateTotal();
+    // if (this.fetchUsers()) {
+    //   this.state = {
+    //     Cart: this.fetchUsers(),
+    //   };
+    // } else {
+    //   this.state = {
+    //     Cart: [],
+    //   };
+    // }
+    // this.total = 0;
+    // this.state.Cart.map((p) => {
+    //   this.total = this.total + p.price * p.quantity;
+    // });
+    // this.tax = (this.total * 5) / 100;
+    // this.grandTotal = this.total + this.tax;
+    // console.log("constructor", this.total);
+
+    // let cart = this.fetchUsers();
+    // console.log("this.fetchUsers() : ", cart);
   }
+// updateTotal=()=>
+// {
+//             this.context.Cart.map((product) => {
+//                this.state.totalPrice= this.state.totalPrice + (product.price * product.quantity)
+//             })
+//             this.context.setTotal(this.state.totalPrice)
+//             this.context.setTax ((this.state.totalPrice * 5) / 100) 
+//              this.context.setGrandtotal( this.state.totalPrice + this.context.Tax)
+//             console.log(this.state.totalPrice)  
+              
+            
+// }
+  // fetchUsers = () => {
+  //          return JSON.parse(localStorage.getItem("Cart"));
+  // };
+  //   // this.timer = setInterval(
+  //   //   () =>{
+  //   //     this.setState({
+  //   //       Cart: this.fetchUsers(),
+  //   //     });
 
-  fetchUsers = () => {
-    return JSON.parse(localStorage.getItem("Cart"));
+  //   //     this.total = 0;
+  //   //   this.state.Cart.map((p) => {
+  //   //     this.total = this.total + p.price * p.quantity;
+  //   //   });
+  //   //   this.tax = (this.total * 5) / 100;
+  //   //   this.grandTotal = this.total + this.tax;
+  //   //   }
+  //   //     ,
+  //   //   1
+  //   // );
+   
+  onProceed=(context)=>
+  {
+context.setGrandtotal(this.grandTotal)
+context.setTotal(this.total)
+context.setTax(this.tax)
+    this.props.history.push("/AddAddress")
+
   };
+  handleIncrement = (Id,context) => {
+    context.addToCart(Id)
+  
 
-  componentDidUpdate() {
-  //   this.state.Cart= this.fetchUsers()
-  // this.total = 0;
-  // this.state.Cart.map((p) => {
-  //   this.total = this.total + p.price * p.quantity;
-  // });
-  // this.tax = (this.total * 5) / 100;
-  // this.grandTotal = this.total + this.tax;
-  // // console.log(this.grandTotal)
-
+    // this.total = 0;
+    // this.context.Cart.map((p) => {
+    //   this.total = this.total + p.price * p.quantity;
+    // });
+    // this.tax = (this.total * 5) / 100;
+    // this.grandTotal = this.total + this.tax;
+    // let p = Products.find((p) => p.productId == Id);
+    // let name = p.productName;
+    // let price = p.price;
+    // if (this.state.Cart.length == 0) {
+    //   let productId = Id;
+    //   let quantity = 0;
+    //   let cart = [...this.state.Cart, { productId, quantity, name, price }];
+    //   this.setState({
+    //     Cart: cart,
+    //   });
+    //   localStorage.setItem("Cart", JSON.stringify(cart));
+    // } else if (this.state.Cart.length > 0) {
+    //   if (this.state.Cart.find((p) => p.productId == Id)) {
+    //     let product = this.state.Cart.find((p) => p.productId == Id);
+    //     let productId = Id;
+    //     let quantity = product.quantity + 1;
+    //     let newCart = this.state.Cart.filter((p) => p.productId != Id);
+    //     let cart = [...newCart, { productId, quantity, name, price }];
+    //     this.setState({
+    //       Cart: cart,
+    //     });
+    //     localStorage.setItem("Cart", JSON.stringify(cart));
+    //   } else {
+    //     let productId = Id;
+    //     let quantity = 0;
+    //     let index = this.state.Cart.findIndex((p) => p.productId == Id);
+    //     let cart = [...this.state.Cart, { productId, quantity, name, price }];
+    //     this.setState({
+    //       Cart: cart,
+    //     });
+    //     localStorage.setItem("Cart", JSON.stringify(cart));
+    //   }
+    // }
+  };
  
 
-          
-
-
-    this.timer = setInterval(
-      () =>{
-        this.setState({
-          Cart: this.fetchUsers(),
-        });
-
-        this.total = 0;
-      this.state.Cart.map((p) => {
-        this.total = this.total + p.price * p.quantity;
-      });
-      this.tax = (this.total * 5) / 100;
-      this.grandTotal = this.total + this.tax;
-      }
-        ,
-      1
-    );
-  }
-
-  handleIncrement = (Id) => {
+  handleDecrement = (Id,context) => {
     let p = Products.find((p) => p.productId == Id);
     let name = p.productName;
     let price = p.price;
-    if (this.state.Cart.length == 0) {
-      let productId = Id;
-      let quantity = 0;
-      let cart = [...this.state.Cart, { productId, quantity, name, price }];
-      this.setState({
-        Cart: cart,
-      });
-      localStorage.setItem("Cart", JSON.stringify(cart));
-    } else if (this.state.Cart.length > 0) {
-      if (this.state.Cart.find((p) => p.productId == Id)) {
-        let product = this.state.Cart.find((p) => p.productId == Id);
-        let productId = Id;
-        let quantity = product.quantity + 1;
-        let newCart = this.state.Cart.filter((p) => p.productId != Id);
-        let cart = [...newCart, { productId, quantity, name, price }];
-        this.setState({
-          Cart: cart,
-        });
-        localStorage.setItem("Cart", JSON.stringify(cart));
-      } else {
-        let productId = Id;
-        let quantity = 0;
-        let index = this.state.Cart.findIndex((p) => p.productId == Id);
-        let cart = [...this.state.Cart, { productId, quantity, name, price }];
-        this.setState({
-          Cart: cart,
-        });
-        localStorage.setItem("Cart", JSON.stringify(cart));
-      }
-    }
-  };
- 
-
-  handleDecrement = (Id) => {
-    let p = Products.find((p) => p.productId == Id);
-    let name = p.productName;
-    let price = p.price;
-
-    let product = this.state.Cart.find((p) => p.productId == Id);
+    let image=p.imgUrl;
+    let userId=context.User.userId;
+    let product = context.Cart.find((up) =>  up.userId === context.User.userId && up.productId === Id);
+  //  let product = context.Cart.find((p) => p.productId == Id);
     let productId = Id;
-    if (product.quantity > 1) {
-      let quantity = product.quantity - 1;
-      let newCart = this.state.Cart.filter((p) => p.productId != Id);
-      let cart = [...newCart, { productId, quantity, name, price }];
-      this.setState({
-        Cart: cart,
-      });
-      localStorage.setItem("Cart", JSON.stringify(cart));
+   if (product.quantity > 1) {
+    //   let quantity = product.quantity - 1;
+    //   let newCart = context.Cart.filter((p) => p.productId != Id);
+    //   let cart = [...newCart, {userId, productId, quantity, name, price }];
+    //   // this.setState({
+    //   //   Cart: cart,
+    //   // });
+    //  // localStorage.setItem("Cart", JSON.stringify(cart));
+    //  context.setCart(cart);
+
+   
+    let quantity = product.quantity - 1;
+    console.log("Cart", context.Cart);
+    var index = context.Cart.findIndex((up) =>  up.userId === context.User.userId && up.productId === Id);
+    console.log(index);
+    var pi= context.Cart[index];
+    console.log(pi);
+    
+     for( var i = 0; i <  context.Cart.length; i++){ 
+      if ( i === index) { 
+        context.Cart.splice(i, 1); 
+      }
+  }
+  console.log( context.Cart);
+  let cart=[... context.Cart,{userId, productId, quantity, name, price, image}]
+    
+console.log("both user and product",cart);
+   context.setCart(cart);
+  // this.props.history.push("/Cart");
     }
     if (product.quantity == 1) {
-      this.handleDelete(Id);
+      this.handleDelete(Id,context);
     }
   };
 
-  handleDelete = (Id) => {
-    let cart = this.state.Cart.filter((p) => p.productId != Id);
-    this.setState({
-      Cart: cart,
-    });
-    console.log(this.state.Cart);
-    localStorage.setItem("Cart", JSON.stringify(cart));
+  handleDelete = (Id,context) => {
+   // let cart = context.Cart.filter((p) => p.productId != Id);
+    var index = context.Cart.findIndex((up) =>  up.userId === context.User.userId && up.productId === Id);
+    console.log(index);
+    var pi= context.Cart[index];
+    console.log(pi);
+    
+     for( var i = 0; i <  context.Cart.length; i++){ 
+      if ( i === index) { 
+        context.Cart.splice(i, 1); 
+      }
+  }
+  console.log(context.Cart);
+  let cart=[...context.Cart]
+   context.setCart(cart);
+  // this.props.history.push("/Cart");
+    // this.setState({
+    //   Cart: cart,
+    // });
+   // console.log(this.state.Cart);
+   // localStorage.setItem("Cart", JSON.stringify(cart));
+ //  context.setCart(cart);
   };
 
   render() {
+    let flag=false;
+    this.total = 0;
+    this.context.Cart.map((p) => {
+      if(p.userId===this.context.User.userId)
+      {
+        this.total = this.total + p.price * p.quantity;
+      }
+      
+    });
+    this.tax = (this.total * 5) / 100;
+    this.grandTotal = this.total + this.tax;
+  
     return (
-      <div>
-        {this.state.Cart.map((product) => {
-          return (
-            <div>
-              <table>
-                <tr>
-                  <th>Product Id</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th>Total Price</th>
-                </tr>
-                <tr>
-                  <td>{product.productId}</td>
-                  <td>{product.name}</td>
-                  <td>
-                    <Counter
-                      onDecrement={this.handleDecrement}
-                      onIncrement={() =>
-                        this.handleIncrement(product.productId)
-                      }
-                      key={product.productId}
-                      onDelete={this.handleDelete}
-                      product={product}
-                    ></Counter>
-                  </td>
-                  <td>{product.price}</td>
-                  <td>{product.price * product.quantity}</td>
-                </tr>
-              </table>
-            </div>
-          );
-        })}
-        <table>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>Total</td>
-            <td>{this.total}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>Tax (5% of total )</td>
-            <td>{this.tax}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>Grand Total</td>
-            <td>{this.grandTotal}</td>
-          </tr>
-        </table>
-      </div>
+      <Data.Consumer>
+        {
+           
+          (context)=>(
+          
+           
+            <StyledDiv>
+              <Div>
+              <StyledTable1>
+                    <tr>
+                      <th>Product Id</th>
+                      <th></th>
+                      <th>Product Name</th>
+                      <th>Quantity</th>
+                      <th>Price</th>
+                      <th>Total Price</th>
+                    </tr>
+            {context.Cart.map((product) => {
+              if(product.userId===context.User.userId)
+              {
+                flag=true;
+                return (
+                  <tr>
+                    <td>{product.productId}</td>
+                    <td><StyledImg src={product.image}></StyledImg></td>
+                    <td>{product.name}</td>
+                    <td>
+                      <Counter
+                        onDecrement={()=>this.handleDecrement(product.productId,context)}
+                        onIncrement={() =>
+                          this.handleIncrement(product.productId,context)
+                        }
+                        key={product.productId}
+                        onDelete={()=>this.handleDelete(product.productId,context)}
+                        product={product}
+                      ></Counter>
+                    </td>
+                    <td>{product.price}</td>
+                    <td>{product.price * product.quantity}</td>
+                  </tr>);
+              }
+              
+                 
+              
+              
+            })}
+            </StyledTable1>
+              </Div>
+
+               
+            <br/><br/>
+            <StyledTable2>
+              <tr>
+                
+                <td>Total</td>
+                <td>{this.total}</td>
+              </tr>
+              <tr>
+               
+                <td>Tax (5% of total )</td>
+                <td>{this.tax}</td>
+              </tr>
+              <tr>
+                
+                <td>Grand Total</td>
+                <td>{this.grandTotal}</td>
+              </tr>
+            </StyledTable2>
+            {
+              flag? <Button onClick={()=>this.onProceed(context)}>Proceed</Button>:<ButtonDisabled disabled>Proceed</ButtonDisabled>
+            }
+            
+            
+          </StyledDiv>
+          )
+        }
+      </Data.Consumer>
+     
     );
   }
 }
-
-export default ViewCart;
+ViewCart.contextType = Data;
+export default withRouter(ViewCart);

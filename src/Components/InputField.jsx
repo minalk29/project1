@@ -4,12 +4,14 @@ import Styled from "styled-components";
 
 const StyledInput =Styled.input`
 width:100%;  
-height: 30px;  
-border-radius: 3px solid;  
+height: 40px;  
+border-radius:5px;
+border: 1px solid #7395AE;  
 display:block;
 margin:5px;
 padding:2px;
 z-index:1;
+font-size:20px;
 `
 
 const Div =Styled.div`
@@ -21,6 +23,9 @@ const style={
 
 const StyledLabel =Styled.label`
 margin:2px;
+color:#5D5C61;
+font-size:20px;
+font-weight:bold;
 `
 const InputField = ({...props}) => {
     

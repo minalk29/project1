@@ -4,53 +4,56 @@ import * as yup from "yup";
 import InputField from "./InputField";
 import { useHistory } from "react-router-dom";
 import Styled from "styled-components";
+import Data from "./Data";
+import { useAlert } from 'react-alert'
+var CryptoJS = require("crypto-js");
 
 const Form =Styled.form`
-        width: auto;  
+        width: 500px;  
         margin: auto; 
         margin-top:10px;
         margin-bottom:10px;
         padding: 50px;
-        border:1px solid #ff4d4d;
+        border:1px solid black;
         border-radius: 15px ; 
-        @media screen and (max-width: 400px) {
+        @media screen and (max-width: 700px) {
           width:auto;
          }
 `
 
 const StyledButton =Styled.button`
+margin: 0 0 0 40%;
 	border: none;
 	border-radius: 7px;
 	color: #fff;
-	background-color: #ff3f40;
+	background-color:  #7395AE;
 	box-shadow: 2px 2px 25px -7px #4c4c4c;
     cursor: pointer;
     text-align:center;
-    height: 40px;
-    width: 80px;
+    height: 50px;
+    width: 100px;
+    font-size:20px;
+    font-weight:bold;
+
 `
 const formSchema = yup.object().shape({
-  firstName: yup.string().required("First Name is Required"),
-  lastName: yup.string().required("Last Name is Required"),
+  firstName: yup.string().required("First Name is Required").min(3),
+  lastName: yup.string().required("Last Name is Required").min(3),
   phone:yup.string().matches(/^\d{10}$/,"Phone number must be 10 Digits").required('A phone number is required'),
   email: yup.string().email("Invalid E-mail").required("E-mail is Required"),
-  password: yup.string().required("Password is Required"),//.matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).*$/,"condition"),
+  password: yup.string().required("Password is Required").min(8)
+  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).*$/,"Password must contain: 1. A Uppercase Letter   2. A Lowercase Letter   3. A Symbol (!@#\$%\^&\*)    4. A Digit from (0 to 9)   5. Min 8 characters")   ,
   confirmPassword: yup.string().oneOf([yup.ref('password'),''],'Passwords must match').required("Confirm Password is Required")
 });
 
 const Registration =() =>{
+  const alert = useAlert();
   let history = useHistory();
-      const [Users,setUser]= useState(JSON.parse(localStorage.getItem('Users')));
-      // console.log(Users)
-      useEffect(() => {
-        
-        // console.log(Users)
-        localStorage.setItem("Users",JSON.stringify(Users))
-      },[Users])
-     
     return (
-  
-      <Formik
+  <Data.Consumer>
+    {
+      (context) =>(
+        <Formik
         initialValues={{
           firstName: "",
           lastName: "",
@@ -58,22 +61,50 @@ const Registration =() =>{
           phone: 0,
           password: "",
           confirmPassword: "",
-        
+          address: "",
+          description:""
         }}
         validationSchema={formSchema}
         onSubmit={(data) => {
+          console.log(data);
+          const {password,confirmPassword,...newData}=data;
+          console.log(data);
+          let Users=context.Users;
+        // if(Users.find((u)=> u.email===data.email))
+        // {
+        //     alert.show("This E-Mail Id already exists");
+        //     history.push("/Signup");
+        // }
+        // else{
+          var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data.password), 'my-secret-key@123').toString();
+          console.log("encrypt",ciphertext);
+          let RegistrationData={...newData,"password":ciphertext}
+          console.log(RegistrationData);
+          
+//First User
+        //       let User = [{...RegistrationData, userId:1}]
+        //     console.log(User)
+        // context.setUsers(User);
+
+
             let totalUsers =Users.length;
             let UserId=totalUsers+1;
-            let User={...data, userId:UserId}
+            let User={...RegistrationData, userId:UserId}
             let allUsers=[...Users,{...User}]
-            setUser(allUsers)
+            context.setUsers(allUsers);
+            console.log(allUsers);
+            history.push("/Login");
+        //}
+          
+
+           // setUser(allUsers)
         //     let allUsers={...Users,...User}
         //  setUser(allUsers)
-         history.push("/Login");
+         
           
           //********************* first user**********************
-        //     let User = [{...data, userId:1}]
-        //     setUser(User)
+        
+        //   //  setUser(User)
         //  history.push("/Login");
           
        // let User = {...data, userId:1}
@@ -86,6 +117,7 @@ const Registration =() =>{
         {({ handleSubmit, isValid }) => {
           return (
             <Form onSubmit={handleSubmit}>
+              <h2>Create Account</h2>
               <InputField
                 label={"First Name"}
                 name={"firstName"}
@@ -119,11 +151,21 @@ const Registration =() =>{
                 name={"confirmPassword"}
                 placeholder={"confirm Password..."}
               ></InputField>
+               <InputField
+                type="text"
+                label={"Address"}
+                name={"address"}
+                placeholder={"Address..."}
+              ></InputField>
               <StyledButton type={"submit"} disabled={!isValid}>Submit</StyledButton>
             </Form>
           );
         }}
       </Formik>
+      )
+    }
+  </Data.Consumer>
+     
      
     );
   
